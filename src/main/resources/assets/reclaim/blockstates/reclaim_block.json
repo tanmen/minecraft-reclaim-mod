@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "reclaim:block/reclaim_block" }
+  }
+}

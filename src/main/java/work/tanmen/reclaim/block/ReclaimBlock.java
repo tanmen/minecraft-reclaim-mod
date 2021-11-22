@@ -7,6 +7,6 @@ import net.minecraft.world.level.material.Material;
 
 public class ReclaimBlock extends Block {
     public ReclaimBlock() {
-        super(BlockBehaviour.Properties.of(Material.AIR).strength(0f));
+        super(BlockBehaviour.Properties.of(Material.STONE).strength(1f));
     }
 }

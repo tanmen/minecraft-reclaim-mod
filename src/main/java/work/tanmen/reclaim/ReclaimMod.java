@@ -19,6 +19,8 @@ public class ReclaimMod {
         ReclaimBlocks.register(bus);
         ReclaimItems.register(bus);
 
+        bus.addListener(ReclaimBlocks::registerRender);
+
         MinecraftForge.EVENT_BUS.register(this);
     }
 }
