@@ -23,6 +23,9 @@ public class ReclaimBlocks {
     public static final RegistryObject<Block> RECLAIM_BLOCK =
             registerBlock("reclaim_block", ReclaimBlock::new);
 
+    public static final RegistryObject<Block> RECLAIM_PREVIEW_BLOCK =
+            registerBlock("reclaim_preview_block", ReclaimPreviewBlock::new);
+
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> registeredBlock = BLOCKS.register(name, block);
         registerBlockItem(name, registeredBlock);
@@ -40,5 +43,6 @@ public class ReclaimBlocks {
 
     public static void registerRender(FMLClientSetupEvent event) {
         ItemBlockRenderTypes.setRenderLayer(RECLAIM_BLOCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(RECLAIM_PREVIEW_BLOCK.get(), RenderType.cutout());
     }
 }
