@@ -5,6 +5,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import work.tanmen.reclaim.block.ReclaimBlocks;
+import work.tanmen.reclaim.block.entity.ReclaimBlockEntities;
 import work.tanmen.reclaim.item.ReclaimItems;
 
 
@@ -18,6 +19,7 @@ public class ReclaimMod {
 
         ReclaimBlocks.register(bus);
         ReclaimItems.register(bus);
+        ReclaimBlockEntities.register(bus);
 
         bus.addListener(ReclaimBlocks::registerRender);
 

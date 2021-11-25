@@ -6,32 +6,36 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import work.tanmen.reclaim.block.entity.ReclaimBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static work.tanmen.reclaim.block.ReclaimBlocks.RECLAIM_PREVIEW_BLOCK;
+import static work.tanmen.reclaim.block.entity.ReclaimBlockEntities.RECLAIM_BLOCK_ENTITY;
 
 public class AirBlockFinder extends Thread {
     private static final Logger LOGGER = LogManager.getLogger();
     private final Level level;
+    private final Optional<ReclaimBlockEntity> entity;
     private final BlockPos pos;
     private final List<BlockPos> searched = new ArrayList<>();
     private final Integer max;
     private Integer count = 0;
 
     public AirBlockFinder(Level level, BlockPos pos) {
-        this.level = level;
-        this.pos = pos;
-        this.max = 64 * 10 * 3;
+        this(level, pos, 64 * 10 * 3);
     }
 
     public AirBlockFinder(Level level, BlockPos pos, Integer max) {
         this.level = level;
         this.pos = pos;
         this.max = max;
+        this.entity = this.level.getBlockEntity(this.pos, RECLAIM_BLOCK_ENTITY.get());
+        LOGGER.info("Entity is {}", this.entity.isPresent() ? "found" : "not found....");
     }
 
     @Override
@@ -40,6 +44,7 @@ public class AirBlockFinder extends Thread {
 
         LOGGER.info("Airs: {}", (long) positions.size());
 
+        this.entity.ifPresent(e -> e.setPositions(positions));
         positions.forEach(pos -> level.setBlock(pos, RECLAIM_PREVIEW_BLOCK.get().defaultBlockState(), 0));
     }
 
