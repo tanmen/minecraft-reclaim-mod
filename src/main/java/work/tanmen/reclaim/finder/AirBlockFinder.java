@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import work.tanmen.reclaim.block.entity.ReclaimBlockEntity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class AirBlockFinder extends Thread {
     private Integer count = 0;
 
     public AirBlockFinder(Level level, BlockPos pos) {
-        this(level, pos, 64 * 10 * 3);
+        this(level, pos, 64 * 9 * 5);
     }
 
     public AirBlockFinder(Level level, BlockPos pos, Integer max) {
@@ -49,9 +50,17 @@ public class AirBlockFinder extends Thread {
     }
 
     private List<BlockPos> searchAirs(BlockPos pos) {
+        if (this.count >= this.max) {
+            return Collections.emptyList();
+        }
         List<BlockPos> positions = searchHorizonAirs(pos);
         List<BlockPos> abovePoses = positions.stream()
-                .flatMap(p -> searchHorizonAirs(p.above(-1)).stream())
+                .flatMap(p -> {
+                    if (this.count >= this.max) {
+                        return Stream.empty();
+                    }
+                    return searchHorizonAirs(p.above(-1)).stream();
+                })
                 .collect(Collectors.toList());
 
         positions.addAll(abovePoses);
@@ -65,12 +74,22 @@ public class AirBlockFinder extends Thread {
 
     private List<BlockPos> searchHorizonAirs(BlockPos pos) {
         List<BlockPos> airs = findAirs(pos);
-        List<BlockPos> positions = new ArrayList<>(airs);
 
         this.count = this.count + airs.size();
+        int over = this.count - this.max;
+
+        List<BlockPos> positions = new ArrayList<>(over == airs.size()
+                ? Collections.emptyList()
+                : over > 0
+                ? airs.subList(0, airs.size() - over)
+                : airs);
 
         if (airs.size() > 0 && this.count < this.max) {
-            airs.forEach(air -> positions.addAll(searchHorizonAirs(air)));
+            airs.forEach(air -> {
+                if (this.count < this.max) {
+                    positions.addAll(searchHorizonAirs(air));
+                }
+            });
         }
         return positions;
     }
