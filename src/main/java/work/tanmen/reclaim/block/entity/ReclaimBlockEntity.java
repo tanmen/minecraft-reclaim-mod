@@ -11,6 +11,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
@@ -25,6 +26,7 @@ import java.util.List;
 public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
     private List<BlockPos> positions = new ArrayList<>();
     private NonNullList<ItemStack> items = NonNullList.withSize(9 * 5, ItemStack.EMPTY);
+    private int required = 0;
     private ContainerOpenersCounter openersCounter = new ContainerOpenersCounter() {
         protected void onOpen(Level p_155062_, BlockPos p_155063_, BlockState p_155064_) {
         }
@@ -42,6 +44,28 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
             } else {
                 return false;
             }
+        }
+    };
+    protected final ContainerData dataAccess = new ContainerData() {
+        public int get(int p_58431_) {
+            switch (p_58431_) {
+                case 0:
+                    return ReclaimBlockEntity.this.required;
+                default:
+                    return 0;
+            }
+        }
+
+        public void set(int p_58433_, int p_58434_) {
+            switch (p_58433_) {
+                case 0:
+                    ReclaimBlockEntity.this.required = p_58434_;
+            }
+
+        }
+
+        public int getCount() {
+            return 1;
         }
     };
 
@@ -63,6 +87,8 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
             int[] array = t.getIntArray("Position");
             this.positions.add(new BlockPos(array[0], array[1], array[2]));
         }
+
+        this.required = this.positions.size();
     }
 
     @Override
@@ -93,6 +119,7 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
 
     public void setPositions(List<BlockPos> positions) {
         this.positions = positions;
+        this.required = positions.size();
     }
 
     public List<BlockPos> getPositions() {
@@ -104,7 +131,7 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     public Integer getItemCount() {
-        return this.items.stream().map(item -> item.getCount()).reduce((accum, value)->accum + value).get();
+        return this.items.stream().map(item -> item.getCount()).reduce((accum, value) -> accum + value).get();
     }
 
     protected void setItems(NonNullList<ItemStack> p_58610_) {
@@ -112,7 +139,7 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     protected AbstractContainerMenu createMenu(int p_58598_, Inventory p_58599_) {
-        return new ReclaimContainerMenu(p_58598_, p_58599_, this);
+        return new ReclaimContainerMenu(p_58598_, p_58599_, this, this.dataAccess);
     }
 
     public void startOpen(Player p_58616_) {

@@ -20,6 +20,7 @@ public class ReclaimScreens {
 
     public static void register(IEventBus eventBus) {
         SCREENS.register(eventBus);
+
     }
 
     public static void enqueueWork() {

@@ -8,7 +8,10 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
@@ -41,12 +44,21 @@ public class ReclaimScreen extends AbstractContainerScreen<ReclaimContainerMenu>
     public void render(PoseStack p_98418_, int p_98419_, int p_98420_, float p_98421_) {
         this.renderBackground(p_98418_);
         super.render(p_98418_, p_98419_, p_98420_, p_98421_);
-        int current = 0;
-        int required = 0;
+
+        int count = 0;
+
+        Container container = this.menu.getContainer();
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack item = container.getItem(i);
+            if (item.is(Items.AIR)) {
+                continue;
+            }
+            count += item.getCount();
+        }
 
         this.font.draw(p_98418_,
-                String.format("%d/%d", current, required),
-                this.leftPos + 88 - Integer.toString(current).length() * 7,
+                String.format("%d/%d", count, this.menu.getPositionCount()),
+                this.leftPos + 88 - Integer.toString(count).length() * 7,
                 this.topPos + 7,
                 4210752);
         this.renderTooltip(p_98418_, p_98419_, p_98420_);

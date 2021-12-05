@@ -5,9 +5,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -18,19 +16,21 @@ public class ReclaimContainerMenu extends AbstractContainerMenu {
     public static final Integer ROW = 5;
     public static final Integer SLOT = 9;
     private final Container container;
+    private final ContainerData data;
 
     public ReclaimContainerMenu(int windowId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(RECLAIM_CONTAINER_TYPE.get(), windowId, playerInv, new SimpleContainer(ROW * SLOT));
+        this(RECLAIM_CONTAINER_TYPE.get(), windowId, playerInv, new SimpleContainer(ROW * SLOT), new SimpleContainerData(1));
     }
 
-    public ReclaimContainerMenu(int windowId, Inventory playerInv, Container container) {
-        this(RECLAIM_CONTAINER_TYPE.get(), windowId, playerInv, container);
+    public ReclaimContainerMenu(int windowId, Inventory playerInv, Container container, ContainerData data) {
+        this(RECLAIM_CONTAINER_TYPE.get(), windowId, playerInv, container, data);
     }
 
-    protected ReclaimContainerMenu(@Nullable MenuType<?> p_38851_, int p_38852_, Inventory playerInv, Container container) {
+    protected ReclaimContainerMenu(@Nullable MenuType<?> p_38851_, int p_38852_, Inventory playerInv, Container container, ContainerData data) {
         super(p_38851_, p_38852_);
         this.container = container;
         container.startOpen(playerInv.player);
+        this.data = data;
 
         int i = (ROW - 4) * 18;
         for (int j = 0; j < ROW; ++j) {
@@ -48,6 +48,8 @@ public class ReclaimContainerMenu extends AbstractContainerMenu {
         for (int i1 = 0; i1 < 9; ++i1) {
             this.addSlot(new Slot(playerInv, i1, 8 + i1 * 18, 161 + i));
         }
+
+        this.addDataSlots(data);
     }
 
 
@@ -87,5 +89,14 @@ public class ReclaimContainerMenu extends AbstractContainerMenu {
 
     public Container getContainer() {
         return this.container;
+    }
+
+    public int getCount() {
+        return this.getItems().stream().map(ItemStack::getCount)
+                .reduce(Integer::sum).get();
+    }
+
+    public int getPositionCount() {
+        return this.data.get(0);
     }
 }
