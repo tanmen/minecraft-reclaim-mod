@@ -2,16 +2,16 @@ package work.tanmen.reclaim.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BarrelBlockEntity;
+import net.minecraft.world.level.block.AbstractGlassBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -33,6 +33,7 @@ import static work.tanmen.reclaim.block.entity.ReclaimBlockEntities.RECLAIM_BLOC
 
 
 public class ReclaimBlock extends AbstractGlassBlock implements EntityBlock {
+
     public ReclaimBlock() {
         super(BlockBehaviour.Properties.of(Material.GLASS).strength(1f)
                 .sound(SoundType.GLASS)
@@ -49,12 +50,12 @@ public class ReclaimBlock extends AbstractGlassBlock implements EntityBlock {
     @Nullable
     public MenuProvider getMenuProvider(BlockState p_49234_, Level p_49235_, BlockPos p_49236_) {
         BlockEntity blockentity = p_49235_.getBlockEntity(p_49236_);
-        return blockentity instanceof MenuProvider ? (MenuProvider)blockentity : null;
+        return blockentity instanceof MenuProvider ? (MenuProvider) blockentity : null;
     }
 
     @Nullable
     protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> p_152133_, BlockEntityType<E> p_152134_, BlockEntityTicker<? super E> p_152135_) {
-        return p_152134_ == p_152133_ ? (BlockEntityTicker<A>)p_152135_ : null;
+        return p_152134_ == p_152133_ ? (BlockEntityTicker<A>) p_152135_ : null;
     }
 
     @Override
@@ -64,9 +65,7 @@ public class ReclaimBlock extends AbstractGlassBlock implements EntityBlock {
         } else {
             BlockEntity blockentity = p_49070_.getBlockEntity(p_49071_);
             if (blockentity instanceof ReclaimBlockEntity) {
-                p_49072_.openMenu((ReclaimBlockEntity)blockentity);
-                p_49072_.awardStat(Stats.OPEN_BARREL);
-                PiglinAi.angerNearbyPiglins(p_49072_, true);
+                p_49072_.openMenu((ReclaimBlockEntity) blockentity);
             }
 
             return InteractionResult.CONSUME;
@@ -88,7 +87,7 @@ public class ReclaimBlock extends AbstractGlassBlock implements EntityBlock {
         if (!state.is(_state.getBlock())) {
             BlockEntity blockentity = level.getBlockEntity(pos);
             if (blockentity instanceof Container) {
-                Containers.dropContents(level, pos, (Container)blockentity);
+                Containers.dropContents(level, pos, (Container) blockentity);
                 level.updateNeighbourForOutputSignal(pos, this);
             }
 
@@ -106,7 +105,7 @@ public class ReclaimBlock extends AbstractGlassBlock implements EntityBlock {
     public void tick(BlockState p_49060_, ServerLevel p_49061_, BlockPos p_49062_, Random p_49063_) {
         BlockEntity blockentity = p_49061_.getBlockEntity(p_49062_);
         if (blockentity instanceof ReclaimBlockEntity) {
-            ((ReclaimBlockEntity)blockentity).recheckOpen();
+            ((ReclaimBlockEntity) blockentity).recheckOpen();
         }
 
     }

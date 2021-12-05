@@ -75,6 +75,11 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
         });
 
         tag.put("Positions", tags);
+
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.items);
+        }
+
         return super.save(tag);
     }
 
@@ -83,7 +88,7 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
     }
 
     protected Component getDefaultName() {
-        return new TranslatableComponent("reclaim:reclaim");
+        return new TranslatableComponent("container.reclaim");
     }
 
     public void setPositions(List<BlockPos> positions) {
@@ -96,6 +101,10 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
 
     protected NonNullList<ItemStack> getItems() {
         return this.items;
+    }
+
+    public Integer getItemCount() {
+        return this.items.stream().map(item -> item.getCount()).reduce((accum, value)->accum + value).get();
     }
 
     protected void setItems(NonNullList<ItemStack> p_58610_) {
