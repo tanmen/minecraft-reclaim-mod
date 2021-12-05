@@ -7,12 +7,15 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
 import static work.tanmen.reclaim.gui.screens.ReclaimScreens.RECLAIM_CONTAINER_TYPE;
 
 public class ReclaimContainerMenu extends AbstractContainerMenu {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final Integer ROW = 5;
     public static final Integer SLOT = 9;
     private final Container container;
@@ -98,5 +101,9 @@ public class ReclaimContainerMenu extends AbstractContainerMenu {
 
     public int getPositionCount() {
         return this.data.get(0);
+    }
+
+    public void executeReclaim() {
+        LOGGER.info("execute");
     }
 }

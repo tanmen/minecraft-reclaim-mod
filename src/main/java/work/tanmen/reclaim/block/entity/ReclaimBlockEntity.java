@@ -82,13 +82,14 @@ public class ReclaimBlockEntity extends RandomizableContainerBlockEntity {
         }
 
         ListTag listtag = tag.getList("Positions", 10);
+        ArrayList<BlockPos> positions = new ArrayList<>();
         for (int i = 0; i < listtag.size(); ++i) {
             CompoundTag t = listtag.getCompound(i);
             int[] array = t.getIntArray("Position");
-            this.positions.add(new BlockPos(array[0], array[1], array[2]));
+            positions.add(new BlockPos(array[0], array[1], array[2]));
         }
 
-        this.required = this.positions.size();
+        this.setPositions(positions);
     }
 
     @Override

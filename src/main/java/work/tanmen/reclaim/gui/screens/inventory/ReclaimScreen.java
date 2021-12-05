@@ -37,6 +37,7 @@ public class ReclaimScreen extends AbstractContainerScreen<ReclaimContainerMenu>
     protected void init() {
         super.init();
         this.addRenderableWidget(new ImageButton(this.leftPos + 149, this.topPos + 4, 20, 12, 0, 224, 13, CONTAINER_BACKGROUND, (p_98484_) -> {
+            this.menu.executeReclaim();
             this.onClose();
         }));
     }
@@ -58,7 +59,7 @@ public class ReclaimScreen extends AbstractContainerScreen<ReclaimContainerMenu>
 
         this.font.draw(p_98418_,
                 String.format("%d/%d", count, this.menu.getPositionCount()),
-                this.leftPos + 88 - Integer.toString(count).length() * 7,
+                this.leftPos + 85 - Integer.toString(count).length() * 6,
                 this.topPos + 7,
                 4210752);
         this.renderTooltip(p_98418_, p_98419_, p_98420_);
